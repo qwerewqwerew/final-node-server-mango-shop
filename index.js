@@ -64,7 +64,7 @@ app.post("/products", (req, res) => {
 		price,
 		seller,
 		imageUrl,
-		imageUrlBig,
+		//imageUrlBig,
 	})
 		.then((result) => {
 			res.send({
