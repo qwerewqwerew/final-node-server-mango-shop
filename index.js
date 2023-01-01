@@ -1,3 +1,4 @@
+/* https://app.cloudtype.io/@qwerewqwerew/final-node-mangoshop */
 const express = require("express"); //express 불러오기
 const cors = require("cors"); //cors 불러오기
 const app = express(); //불러온 express 실행
