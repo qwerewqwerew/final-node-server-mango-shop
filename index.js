@@ -6,14 +6,14 @@ const models = require("./models");
 const multer = require("multer");
 const upload = multer({
 	storage: multer.diskStorage({
-	  destination: function (req, file, cb) {
-		cb(null, "uploads/");
-	  },
-	  filename: function (req, file, cb) {
-		cb(null, file.originalname);
-	  },
+		destination: function (req, file, cb) {
+			cb(null, "uploads/");
+		},
+		filename: function (req, file, cb) {
+			cb(null, file.originalname);
+		},
 	}),
-  });
+});
 const port = process.env.PORT || 8080;
 
 app.use(express.json());
@@ -21,26 +21,40 @@ app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
 //banner api
-app.get('/banners',(req,res)=>{
-	console.log(res);
+app.get('/banners', (req, res) => {
 	models.Banner.findAll({
-		limit: 2,	
-	  })
+		limit: 2,
+	})
 		.then((result) => {
-		  res.send({
-			banners: result,			
-		  });
+			res.send({
+				banners: result,
+			});
 		})
 		.catch((error) => {
-		  console.error(error);
-		  res.status(500).send("에러가 발생했습니다");
+			console.error(error);
+			res.status(500).send("에러가 발생했습니다");
+		});
+})
+//icon api
+app.get('/icons', (req, res) => {
+	models.Icon.findAll({
+		attributes: ["id", "name", "imageUrl"],
+	})
+		.then((result) => {
+			res.send({
+				banners: result,
+			});
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send("에러가 발생했습니다");
 		});
 })
 
 app.get("/products", (req, res) => {
 	models.Product.findAll({
 		order: [["createdAt", "DESC"]],
-		attributes: ["id", "name", "price", "seller", "createdAt","imageUrl","soldout"],
+		attributes: ["id", "name", "price", "seller", "createdAt", "imageUrl", "soldout"],
 	})
 		.then((result) => {
 			console.log("PRODUCTS : ", result);
@@ -54,11 +68,11 @@ app.get("/products", (req, res) => {
 		});
 });
 
-//app에 post 방식 사용시 요청,응답 
+//app에 post 방식 사용시 요청,응답
 //상품등록
 app.post("/products", (req, res) => {
 	const body = req.body;
-	const {name, description, price, seller, imageUrl} = body;
+	const { name, description, price, seller, imageUrl } = body;
 	models.Product.create({
 		name,
 		description,
@@ -80,7 +94,7 @@ app.post("/products", (req, res) => {
 
 app.get("/products/:id", (req, res) => {
 	const params = req.params;
-	const {id} = params;
+	const { id } = params;
 	//단일상품조회는 findOne
 	models.Product.findOne({
 		//조건문 where 사용 => id가 상수 id와 같은것
@@ -100,37 +114,37 @@ app.get("/products/:id", (req, res) => {
 		});
 });
 
-app.post('/image',upload.single('image'),(req,res)=>{
-	const file=req.file;
+app.post('/image', upload.single('image'), (req, res) => {
+	const file = req.file;
 	console.log(file);
 	res.send({
-		imageUrl:file.path,
+		imageUrl: file.path,
 	})
 })
 
 app.post("/purchase/:id", (req, res) => {
 	const { id } = req.params;
 	models.Product.update(
-	  {
-		soldout: 1,
-	  },
-	  {
-		where: {
-		  id,
+		{
+			soldout: 1,
 		},
-	  }
+		{
+			where: {
+				id,
+			},
+		}
 	)
-	  .then((result) => {
-		res.send({
-		  result: true,
+		.then((result) => {
+			res.send({
+				result: true,
+			});
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send("에러가 발생했습니다.");
 		});
-	  })
-	  .catch((error) => {
-		console.error(error);
-		res.status(500).send("에러가 발생했습니다.");
-	  });
-  });
-  
+});
+
 app.listen(port, () => {
 	console.log("망고샵의 서버가 구동되고 있습니다");
 	models.sequelize
