@@ -42,7 +42,7 @@ app.get('/icons', (req, res) => {
 	})
 		.then((result) => {
 			res.send({
-				banners: result,
+				Icons: result,
 			});
 		})
 		.catch((error) => {
