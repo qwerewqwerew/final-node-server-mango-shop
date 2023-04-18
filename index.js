@@ -142,9 +142,9 @@ app.post("/purchase/:id", (req, res) => {
 });
 
 app.get("/todos", (req, res) => {
-	models.Product.findAll({
-		order: [["createdAt", "DESC"]],
-		attributes: ["id", "subject", "completed"],
+	models.Todos.findAll({
+		order: [["id", "DESC"]],
+		attributes: ["id", "subject", "complete"],
 	})
 		.then((result) => {
 			console.log("TODOS : ", result);
@@ -159,7 +159,7 @@ app.get("/todos", (req, res) => {
 });
 app.get("/todos:id", (req, res) => {
 	const { id } = req.params;
-	models.Product.update(
+	models.Todos.update(
 		{
 			complete: 1,
 		},
